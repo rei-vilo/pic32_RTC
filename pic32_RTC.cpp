@@ -3,27 +3,28 @@
 // © http://sites.google.com/site/vilorei
 // CC = BY NC SA
 // 
-// Jun 19, 2011 - Library
+// Jun 19, 2011 version 1 - initial release
+// Nov 21, 2011 version 2 - all functions made private 
+//                          to avoid collusion between pic32_RTC and I2C_Clock 
 //
 // based on Paul_L chipKITRTCC library
 //
+// Additional 32.768 kHz crystal required.
+//
+// See 
+// 	Section 6: Oscillators 
+// 	Section 29: Real-Time Clock and Calendar (RTCC)
+// from 
+// 	PIC32 Family Reference Manual on Microchip website
+//
+
+#ifndef __PIC32MX__
+#error pic32_RTC requires PIC32 chip
+#else
 
 #include "WProgram.h"
 #include "pic32_RTC.h"
 
-
-// Convert normal decimal numbers to binary coded decimal
-uint8_t dec2bcd(uint8_t val) {
-  return ( (val/10*16) + (val%10) );
-}
-
-// Convert binary coded decimal to normal decimal numbers
-uint8_t bcd2dec(uint8_t val) {
-  return ( (val/16*10) + (val%16) );
-}
-
-String days[7] = {
-  "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 
 pic32_RTC::pic32_RTC() {
@@ -90,6 +91,9 @@ String pic32_RTC::time() {
 String pic32_RTC::dayWeek() {
   // array is 0-6, but the dow register holds 1-7, so subtract 1.
   // 0 = Sunday
+  String days[7] = {
+    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"    };
+
   return days[_dayWeekNumber - 1];    
 }
 
@@ -118,32 +122,32 @@ String pic32_RTC::datetime() {
   return _datetime;
 }
 
-uint8_t pic32_RTC::year() {
+uint16_t pic32_RTC::year() {
   return _year;
 }
 
-uint8_t pic32_RTC::month() {
+uint16_t pic32_RTC::month() {
   return bcd2dec(_month);
 }
 
-uint8_t pic32_RTC::day() {
+uint16_t pic32_RTC::day() {
   return _day;
 }
 
-uint8_t pic32_RTC::hour() {
+uint16_t pic32_RTC::hour() {
   return _hour;
 }
 
-uint8_t pic32_RTC::minute() {
+uint16_t pic32_RTC::minute() {
   return _minute;
 }
 
-uint8_t pic32_RTC::second() {
+uint16_t pic32_RTC::second() {
   _second;
 }
 
 
-void pic32_RTC::set(uint8_t year0, uint8_t month0, uint8_t day0, uint8_t hour0, uint8_t minute0, uint8_t second0)
+void pic32_RTC::set(uint16_t year0, uint16_t month0, uint16_t day0, uint16_t hour0, uint16_t minute0, uint16_t second0)
 {
 
   if (year0 < 100)  {
@@ -152,12 +156,12 @@ void pic32_RTC::set(uint8_t year0, uint8_t month0, uint8_t day0, uint8_t hour0, 
   // Day of week calculation  
   // code by Tomohiko Sakamoto       0 = Sunday 
   // comp.lang.c on March 10th, 1993
-  uint8_t y;
-  uint8_t m;
-  uint8_t d;
-  uint8_t dow; // day of week
-  static uint8_t t[] = {
-    0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4                    };
+  uint16_t y;
+  uint16_t m;
+  uint16_t d;
+  uint16_t dow; // day of week
+  static uint16_t t[] = {
+    0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4                      };
 
   y = year0;
   m = month0;
@@ -227,5 +231,15 @@ void pic32_RTC::reset() {
 
 
 
+// Convert normal decimal numbers to binary coded decimal
+uint16_t pic32_RTC::dec2bcd(uint16_t val) {
+  return ( (val/10*16) + (val%10) );
+}
 
+// Convert binary coded decimal to normal decimal numbers
+uint16_t pic32_RTC::bcd2dec(uint16_t val) {
+  return ( (val/16*10) + (val%16) );
+}
+
+#endif // #if defined(__PIC32MX__)
 
