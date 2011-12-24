@@ -6,6 +6,7 @@
 // Jun 19, 2011 version 1 - initial release
 // Nov 21, 2011 version 2 - all functions made private 
 //                          to avoid collusion between pic32_RTC and I2C_Clock 
+// Dec 24, 2011 version 3 - fix added by majenko to support mpide build 20111215
 //
 // based on Paul_L chipKITRTCC library
 //
@@ -24,7 +25,7 @@
 
 #include "WProgram.h"
 #include "pic32_RTC.h"
-
+#include <sys/attribs.h>
 
 
 pic32_RTC::pic32_RTC() {
