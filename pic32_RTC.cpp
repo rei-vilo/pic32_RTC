@@ -1,3 +1,4 @@
+//
 // pic32_RTC
 //
 // © http://sites.google.com/site/vilorei
@@ -7,6 +8,7 @@
 // Nov 21, 2011 version 2 - all functions made private 
 //                          to avoid collusion between pic32_RTC and I2C_Clock 
 // Dec 24, 2011 version 3 - fix added by majenko to support mpide build 20111215
+// Jan 15, 2012 version 4 - dayWeek fixed
 //
 // based on Paul_L chipKITRTCC library
 //
@@ -95,7 +97,7 @@ String pic32_RTC::dayWeek() {
   String days[7] = {
     "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"    };
 
-  return days[_dayWeekNumber - 1];    
+  return days[_dayWeekNumber];    
 }
 
 String pic32_RTC::date() {
